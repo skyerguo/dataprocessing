@@ -19,9 +19,11 @@ INFO = ["Country",
         "Pop. Density (per sq. mi.)",
         "Infant mortality (per 1000 births)",
         "GDP ($ per capita) dollars"]
+# The formation of DataFrame as suggested
 
 
 def get_num(st):
+    # get the float number from string
     return float(re.findall(r"\d+\,?\d*", st)[0].replace(',', '.'))
 
 
@@ -36,14 +38,17 @@ def load():
 
             # Clean and preprocess the data
             flag = 0
+            # flag to mark whether the line is available(0 is available)
             for column in INFO:
                 if row[column] == "" or row[column] == "unknown":
                     flag = 1
 
+            # append the line in new array for storing the data
             if flag == 0:
                 arr.append([row[INFO[0]].strip(), row[INFO[1]].strip(),
                             get_num(row[INFO[2]]), get_num(row[INFO[3]]), int(get_num(row[INFO[4]]))])
 
+    # deposit the data as pandas.DataFame
     return pd.DataFrame(arr, columns=INFO, index=range(len(arr)))
 
 
@@ -63,7 +68,7 @@ def central_tendency():
     print("GDP standard: %f" % gdp_std)
 
     # Produce a histogram of the GDP data
-    gdp_hist = data_file[INFO[4]].plot.hist(color='green', bins=20).get_figure()
+    gdp_hist = data_file[INFO[4]].plot.hist(color='green', bins=20, alpha=0.5).get_figure()
     gdp_hist.savefig("GDP histogram.png")
 
 
