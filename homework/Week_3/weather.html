@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+        name: Tiancheng Guo.
+        student ID: 12455814.
+        purpose: draw pictures for daily average wind speed(in 0.1m/s) from Oct 1st to Nov 20. 
+                 Use javascript and html5 to plot a line chart.
+    -->
+
+    <meta charset="UTF-8">
+    <title>Weather Chart</title>
+
+    <style>
+        /* inital the default setting of canvas picture. name as cv. */
+        #cv
+        {
+            width: 700px;
+            height: 200px;
+            border-bottom: 2px solid;
+            border-left: 2px solid;
+        }
+    </style>
+</head>
+<body>
+    <div id="temperatures from Oct to now">
+        average wind spped in NL from Oct to now
+    </div>
+    <script>
+        /* read the json data and send to the server. */
+        function readTextFile(file, callback)
+        {
+            var fileName = "data.json";
+            var txtFile = new XMLHttpRequest();
+            txtFile.onreadystatechange = function()
+            {
+                if (txtFile.readyState === 4 && txtFile.status == 200)
+                {
+                    /* save the data to callback as a return, for the use of others. */
+                    callback(txtFile.responseText);
+                }
+            }
+            txtFile.open("GET", fileName);
+            txtFile.send();
+        }
+    </script>
+    
+    <!-- declare the canvas as cv for the use below. -->
+    <canvas id="cv"></canvas>
+
+    <script>
+        readTextFile("data.json", function(text)
+        {
+            /* load the json data from server and save as dict. */
+            var dict = JSON.parse(text);
+            var len = dict.length;
+            var xArr = [], yArr = [];
+            
+            for (var i = 0; i < len; i++)
+            {
+                /* the position x is seperate by equal 10 px to be readable. */
+                xArr.push(i * 10);
+                yArr.push(dict[i].FG);
+            }
+
+            /* calculate and store the minimum and maximum of y axis coordinates. 
+               This helps the line chart looks better. */
+            var minY = Math.min.apply(Math, yArr);
+            var maxY = Math.max.apply(Math, yArr);
+            
+            /* use the cv setting above. */
+            var canvas = document.getElementById("cv");
+            var ctx = canvas.getContext('2d');
+            
+            /* plot the line. */
+            for (var i = 0; i < len; i++)
+            {
+                var x = xArr[i];
+                var y = maxY - yArr[i] + minY;
+                if(i === 0)
+                    ctx.moveTo(x, y);
+                else
+                    ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            /* plot the points explanation. */
+            for (var i = 0; i < len; i = i + 5)
+            /* every five day has a display of points, which won't look too messy. */
+            {
+                var x = xArr[i];
+                var y = maxY - yArr[i] + minY;
+                /* xMemo is the date. */
+                var xMemo = dict[i].YYYYMMDD;
+                /* y Memo is the wind speed(in 0.1m/s). */
+                var yMemo = dict[i].FG;
+                ctx.beginPath();
+                ctx.fillStyle = "#000";
+                ctx.arc(x, y, 2, 0, 2 * Math.PI);
+                ctx.fill();
+
+                /* plot the points in certain positions. */
+                ctx.fillText(yMemo, x + 3, y - 10);
+                ctx.fillText(xMemo, x + 3, canvas.height - 10, 40);
+            }
+        });
+    </script>
+
+</body>
+</html>
