@@ -8,108 +8,23 @@ d3.json("data.json").then(function(json) {
 
     var dataset = json;
 
-    /*var margin = {top: 20, right: 20, bottom: 30, left: 50};
-    var width = document.body.clientWidth - margin.left - margin.right;
-    var height = 500 - margin.top - margin.bottom;
-
-    var container = d3.select('body')
-                        .append('svg')
-                        .attr('width', width + margin.left + margin.right)
-                        .attr('height', height + margin.top + margin.bottom);
-
-    var svg = container.append('g')
-                        .attr('class', 'content')
-                        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-    var x = d3.scaleTime()
-                    .domain(d3.extent(data, function(d) { return d.YYYYMMDD.substring(6, 8); }))
-                    .range([0, width]);
-                
-    var y = d3.scaleLinear()
-                    .domain([0, d3.max(data, function(d) { return d.FG; })])
-                    .range([height, 0]);
-
-    var xAxis = d3.axisBottom(x)
-                .ticks(30);
-                    
-    var yAxis = d3.axisLeft(y)
-                .ticks(10);    
-    // calculate the width of each bar
-    var barWidth = width / data.length;
-
-    var bar = svg.selectAll('g')
-                    .data(data)
-                    .enter()
-                    .append('g')
-    // 接收一个数据填充一个g元素
-    // 同时为g设置位置
-                    .attr('transform', function(d, i) {
-                        return 'translate(' + i * barWidth + ', 0)';
-    });
-    
-    bar.append('rect')
-        // 添加一个矩形
-        .attr('y', function(d) { return height - d; })
-        .attr('height', function(d) { return d; })
-        .attr('width', barWidth - 1);   
-
-    svg.append('g')
-        .attr('class', 'x axis')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(xAxis)
-        .append('text')
-        .text('date')
-        .attr('transform', 'translate(' + width + ', 0)');
-        
-
-    svg.append('g')
-        .attr('class', 'y axis')
-        .call(yAxis)
-        .append('text')
-        .text('FG');
-    
-    // calculate the width of each bar
-    var barWidth = width / data.length;
-
-    var bar = svg.selectAll('g')
-                    .data(data)
-                    .enter()
-                    .append('g')
-    // 接收一个数据填充一个g元素
-    // 同时为g设置位置
-                    .attr('transform', function(d, i) {
-                        return 'translate(' + i * barWidth + ', 0)';
-    });
-    
-    bar.append('rect')
-        // 添加一个矩形
-        .attr('y', function(d) { return height - d; })
-        .attr('height', function(d) { return d; })
-        .attr('width', barWidth - 1);   
-    */
-
-    var width = 660;    // svg可视区域宽度
-    var height = 660;   // svg可视区域高度
+    var width = 1200;    // svg可视区域宽度
+    var height = 600;   // svg可视区域高度
     var svg = d3.select("body")
             .append("svg")
             .attr("width", width).attr("height", height);
     
     var padding = {top: 20, right: 20, bottom: 20, left: 50};   // 边距
     
-    var xAxisWidth = 500; // x轴宽度
-    var yAxisWidth = 500; // y轴宽度
+    var xAxisWidth = width - 150; // x轴宽度
+    var yAxisWidth = height - 100; // y轴宽度
+    var bar_num = 31;
     
     /* x轴比例尺(序数比例尺) */
     var xScale = d3.scaleLinear()
-            .domain([0, d3.max(dataset, function(d) { return d.YYYYMMDD.substring(6, 8); })])
+            .domain([0, d3.max(dataset, function(d) { return d.YYYYMMDD % 100; })])
             .range([0, xAxisWidth], 0.2);
-    
-    console.log('--');
-    console.log(d3.max(d3.values(dataset), function(d) {
-            return d.TG;
-        })
-    );
-    console.log('--');
+
     /* y轴比例尺(线性比例尺) */
     var yScale = d3.scaleLinear()
             .domain([0, d3.max(dataset, function(d) { 
@@ -117,30 +32,106 @@ d3.json("data.json").then(function(json) {
             })])
             .range([yAxisWidth, 0]);
 
+    var yBarScale = d3.scaleLinear()
+            .domain([0, d3.max(dataset, function(d) { 
+                return d.FG;
+            })])
+            .range([0, yAxisWidth]);
+    
+    /* title of the bar chart */
+    svg.append('text')
+        .attr('x', width / 2 + padding.left)
+        .attr('y', padding.top * 2)
+        .attr('text-anchor', 'middle')
+        .style("font-size", "40px")
+        .style("fill", "green")
+        .text('Wind speed bar chart')
+    
+    /* 网格线 */
+    /*function make_y_gridlines() {
+        return d3.axisLeft(yScale).ticks(10)
+    }
+    svg.append("g")
+        .attr("class", "grid")
+        .call(make_y_gridlines()
+                    .tickSize(-width) 
+                    .tickFormat(""))*/
+
     /* rect */
     var rect = svg.selectAll("rect")
             .data(dataset)
             .enter()
             .append("rect")
-            .call(rectFun);
+            .call(rectFun)
+            .on("mouseover",function(d,i) {
+                d3.select(this)
+                .attr("fill","purple");
+                
+                /* show a red line as the highlight */
+                svg.append('line')
+                    .attr('id', 'highlight')
+                    .attr('x1', 0)
+                    .attr('y1', height - padding.bottom - yBarScale(d.FG))
+                    .attr('x2', width)
+                    .attr('y2', height - padding.bottom - yBarScale(d.FG))
+                    .attr('stroke', 'red');
+                
+                /* show the number of wind speed for current bar */
+                svg.append("text")
+                    .attr("id", 'currentnum')
+                    .attr("fill", "white")
+                    .attr("font-size", "14px").attr("text-anchor", "middle")
+                    .attr("x", padding.left + xScale(i))
+                    .attr("y", height - padding.bottom - yBarScale(d.FG))
+                    .attr("dx", xAxisWidth / bar_num).attr("dy", "1em")
+                    .text(d.FG);
+                
+            }) //光标放在矩形上时填充变色
+            .on("mouseout",function(d,i) {
+                d3.select(this)
+                .transition()
+                .duration(500)
+                .attr("fill","steelblue");
+
+                d3.selectAll("#highlight").attr('opacity', 0);
+                d3.selectAll("#currentnum").attr('opacity', 0);
+            }) //光标离开矩形上时填充变色
+    
     
     /* text */
-    var text = svg.selectAll("text")
+    /*var text = svg.selectAll("text")
             .data(dataset)
             .enter()
             .append("text")
-            .call(textFun);
+            .attr("opacity", 0)
+            .call(textFun);*/
+            /*.on("mouseover",function(d,i) {
+                d3.select(this).attr("opacity", 1);
+            }) //光标放在矩形上时填充变色
+            .on("mouseout",function(d,i) {
+                d3.select(this)
+                .transition()
+                .duration(500)
+                .attr("opacity", 0);
+            }) //光标离开矩形上时填充变色;*/
     
     /* 添加坐标轴 */
-    var xAxis = d3.axisBottom(xScale).ticks(31);
+    var xAxis = d3.axisBottom(xScale).ticks(bar_num);
     var yAxis = d3.axisLeft(yScale);
+
+    /*var str_windspeed = "WS, (0.1m/s)";
+    var strs_windspeed = str_windspeed.split(',');
+    var test_windspeed = svg.append("text")
+                            .style("font-size", "25px")
+                            .style("fill", "red");*/
     
     svg.append("g").attr("class", "axis")
             .attr("transform", "translate("+ padding.left +","+ (height - padding.bottom) +")")
             .call(xAxis);
     svg.append("text")
             .text("date")
-            .style("font-size", "20px")
+            .style("font-size", "25px")
+            .style("fill", "red")
             .attr("transform", "translate(" + (xAxisWidth + padding.right + padding.left) +","+ (height) + ")");
     
     svg.append("g").attr("class", "axis")
@@ -148,23 +139,39 @@ d3.json("data.json").then(function(json) {
             .call(yAxis);
     svg.append("text")
             .text("FG")
-            .style("font-size", "20px")
+            .style("font-size", "25px")
+            .style("fill", "red")
             .attr("transform", "translate(" + padding.left + "," + (height - padding.bottom - yAxisWidth) + ")");
     
+
+    /* 网格 */
+    /*svg.append('g')
+        .attr('class', 'grid')
+        .attr('transform', `translate(0, ${height})`)
+        .call(d3.axisBottom()
+        .scale(xScale)
+        .tickSize(-height, 0, 0)
+        .tickFormat(''))*/
+
+    /*svg.append('g')
+        .attr('class', 'grid')
+        .call(d3.axisLeft()
+        .scale(yScale)
+        .tickSize(-yAxisWidth, -padding.left)
+        .tickFormat(''))*/
+
     /* rect处理函数 */
     function rectFun(selection) {
         selection.attr("fill", "steelblue")
                 .attr("x", function(d, i){
-                    return padding.left + xScale(i);
+                    return padding.left + xScale(i + 0.7);
                 })
                 .attr("y", function(d){
-                    console.log(d.FG);
-                    return height - padding.bottom - yScale(d.FG);
+                    return height - padding.bottom - yBarScale(d.FG);
                 })
-                .attr("width", xScale())
+                .attr("width", xAxisWidth / bar_num / 1.5)
                 .attr("height", function(d){
-                    console.log(yScale(d.FG));
-                    return yScale(d.FG);
+                    return yBarScale(d.FG);
                 });
     }
     
@@ -176,11 +183,12 @@ d3.json("data.json").then(function(json) {
                     return padding.left + xScale(i);
                 })
                 .attr("y", function(d){
-                    return height - padding.bottom - yScale(d);
+                    return height - padding.bottom - yBarScale(d.FG);
                 })
-                .attr("dx", xScale()/2).attr("dy", "1em")
+                .attr("dx", xAxisWidth / bar_num).attr("dy", "1em")
                 .text(function(d){
-                    return d;
+                    return d.FG;
                 });
     }
+
 });

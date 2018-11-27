@@ -20,7 +20,7 @@ def read_csv(file):
         title = reader.fieldnames
 
         for row in reader:
-            csv_rows.extend([{title[i]: row[title[i]] for i in range(len(title))}])
+            csv_rows.extend([{title[i]: int(row[title[i]]) for i in range(len(title))}])
             # extract each line and save in the list 'csv_rows'
 
     return csv_rows
