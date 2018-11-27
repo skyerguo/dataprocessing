@@ -22,6 +22,7 @@ def read_csv(file):
         for row in reader:
             csv_rows.extend([{title[i]: int(row[title[i]]) for i in range(len(title))}])
             # extract each line and save in the list 'csv_rows'
+            # store the data as number
 
     return csv_rows
 
