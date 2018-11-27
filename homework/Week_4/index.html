@@ -4,27 +4,17 @@
         <!--
             name: Tiancheng Guo.
             student ID: 12455814.
-            purpose: draw pictures for daily average wind speed(in 0.1m/s) from Oct 1st to Nov 20. 
-                    Use javascript and html5 to plot a line chart.
+            purpose: draw pictures for daily average wind speed(in 0.1m/s) from 1st Oct to 31st Oct. 
+                    Use javascript, css and html5 to plot a bar chart.
             assignment: "D3 Barchart"
         -->
 
         <meta charset="UTF-8">
         <meta name="author" content="Tiancheng Guo">
-
-        <style>
-            .axis path,
-            .axis line{
-                fill: none;
-                stroke: black;
-                shape-rendering: crispEdges;
-            }
-            
-            .axis text {
-                font-family: sans-serif;
-                font-size: 14px;
-                fill: orange;
-            }
+        
+        <!-- use the css style of my own from file -->
+        <style type="text/css">  
+            @import "barchart.css";  
         </style>
 
         <title>D3 Interactive Bar Chart</title>
@@ -32,9 +22,18 @@
         <script Language="JavaScript" src="barchart.js"></script>
 
     </head>
-        <div id="title">
-            <h1>
-                wind speed in OCT.
+        <div id="data">
+            <h1 type="title" style="text-align:center;">
+                D3 Interactive Bar Chart
+                <h2 type="explanation">
+                    <p>
+                        Data explanations: <br />
+                        The data is about the daily weather in the Netherlands, from KNMI.<br />
+                        I use the wind speed data(0.1m/s) for the bar chart, whose key is FG in origin data.<br />
+                        Date range of the data is one month, from 1st Oct 2018 to 31st Oct 2018.<br />
+                        Detective station of these data is 278 Heino.<br />
+                    </p>
+                </h2>
             </h1>
         </div>
     <body>

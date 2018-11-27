@@ -40,11 +40,10 @@ d3.json("data.json").then(function(json) {
     
     /* title of the bar chart, on the middle and top of total figure */
     svg.append("text")
+        .attr("class", "title")
         .attr("x", width / 2 + padding.left)
         .attr("y", padding.top * 2)
         .attr("text-anchor", "middle")
-        .style("font-size", "40px")
-        .style("fill", "green")
         .text("Wind speed bar chart")
 
     /* rect */
@@ -60,7 +59,7 @@ d3.json("data.json").then(function(json) {
                         /* show a red line as the highlight */
                         svg.append("line")
                             .attr("id", "highlight") // set the id for disappearance
-                            .attr("x1", 0)
+                            .attr("x1", padding.left)
                             .attr("y1", height - padding.bottom - yBarScale(d.FG))
                             .attr("x2", width)
                             .attr("y2", height - padding.bottom - yBarScale(d.FG))
@@ -68,10 +67,8 @@ d3.json("data.json").then(function(json) {
                         
                         /* show the number of wind speed for current bar */
                         svg.append("text")
+                            .attr("class", "bar-number")
                             .attr("id", "currentnum") // set the id for disappearance
-                            .attr("fill", "white")
-                            .attr("font-size", "16px")
-                            .attr("text-anchor", "middle")
                             .attr("x", padding.left + xScale(i))
                             .attr("y", height - padding.bottom - yBarScale(d.FG))
                             .attr("dx", xAxisWidth / bar_num)
@@ -101,9 +98,8 @@ d3.json("data.json").then(function(json) {
     
     /* find proper position to draw the label of x-axis*/
     svg.append("text")
+        .attr("class", "label")
         .text("date")
-        .style("font-size", "25px")
-        .style("fill", "red")
         .attr("transform", "translate(" + (xAxisWidth + padding.right + padding.left) +","+ (height) + ")");
 
     /* find proper position to draw y-axis */    
@@ -114,9 +110,8 @@ d3.json("data.json").then(function(json) {
     
     /* find proper position to draw the label of y-axis*/
     svg.append("text")
+        .attr("class", "label")
         .text("wind speed(0.1m/s)")
-        .style("font-size", "25px")
-        .style("fill", "red")
         .attr("transform", "translate(" + padding.left + "," + (height - padding.bottom - yAxisWidth) + ")");
 
     /* rect processing function */
