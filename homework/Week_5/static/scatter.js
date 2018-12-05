@@ -15,7 +15,7 @@ window.onload = function() {
         var countryList = ["France", "Germany", "Korea", "Netherlands", "Portugal", "United Kingdom"]; // 6 countries list
         
         var width = 1600; // visual area width of svg
-        var height = 900; // visual area height of svg
+        var height = 700; // visual area height of svg
 
         var xAxisWidth = width - 500; // width of x-axis
         var yAxisWidth = height - 150; // height of y-axis
@@ -32,6 +32,7 @@ window.onload = function() {
             /* initialize the svg */
             svg = d3.select("body")
                         .append("svg")
+                        .attr("class", "test")
                         .attr("width", width)
                         .attr("height", height);
 
@@ -53,45 +54,55 @@ window.onload = function() {
                 .attr("x", width / 2 + padding.left)
                 .attr("y", padding.top * 2)
                 .attr("text-anchor", "middle")
-                .text("Scatter Plot")
+                .text("Scatter Plot(Dataset" + datasetNum + ")")
         }
 
-        function drawScale() {
+        function drawScale(datasetNum) {
 
             var xAxis = d3.axisBottom(xScale);
 
-            yScale.range([yAxisWidth, bufferAxis]);  // 重新设置y轴比例尺的值域,与原来的相反
+            yScale.range([yAxisWidth, bufferAxis]);  // reset the value range of the y-axis scale, as opposed to the original
             var yAxis = d3.axisLeft(yScale);
             
             /* find proper position to draw x-axis */
             svg.append("g")
                 .attr("class", "axis")
-                .attr("transform", "translate("+ padding.left +","+ (height - padding.bottom) +")")
+                .attr("transform", "translate(" + padding.left + "," + (height - padding.bottom) + ")")
                 .call(xAxis);
 
             /* find proper position to draw the label of x-axis*/
             svg.append("text")
                 .attr("class", "label")
                 .text("year")
-                .attr("transform", "translate(" + (xAxisWidth + padding.right + padding.left) +","+ (height- padding.bottom) + ")");
+                .attr("transform", "translate(" + (xAxisWidth + padding.right + padding.left) + "," + (height- padding.bottom) + ")");
 
             /* find proper position to draw y-axis */    
             svg.append("g")
                 .attr("class", "axis")
-                .attr("transform", "translate("+ padding.left +","+ (height - padding.bottom - bufferAxis- yAxisWidth) +")")
+                .attr("transform", "translate("+ padding.left + "," + (height - padding.bottom - bufferAxis- yAxisWidth) + ")")
                 .call(yAxis);
 
             /* find proper position to draw the label of y-axis*/
-            svg.append("text")
-                .attr("class", "label")
-                .text("percentage(%)")
-                .attr("transform", "translate(" + padding.left + "," + (height - padding.bottom - bufferAxis - yAxisWidth) + ")");
 
-            // 绘制完比例尺,还原比例尺y轴值域
+            if (datasetNum == 0) {
+                svg.append("text")
+                    .attr("class", "label")
+                    .text("percentage(%)")
+                    .attr("transform", "translate(" + padding.left + "," + (height - padding.bottom - bufferAxis - yAxisWidth) + ")");
+            }
+            else {
+                svg.append("text")
+                    .attr("class", "label")
+                    .text("Consumer confidence")
+                    .attr("transform", "translate(" + padding.left + "," + (height - padding.bottom - bufferAxis - yAxisWidth) + ")");
+            }
+
+            // after drawing the scale, restore the scale y-axis value range
             yScale.range([bufferAxis, yAxisWidth]);
         }
 
         function drawCircle(Inputdata) {
+        // this function draw each circle in the Figure
 
             var Circle = svg.selectAll("circle")
                             .data(Inputdata)
@@ -143,7 +154,7 @@ window.onload = function() {
             // add text for each colorful circle about which country it belongs to
             legend.append("text")
                     .attr("x", xAxisWidth + 220)
-                    .attr("y", function (d,i) {
+                    .attr("y", function (d, i) {
                         return padding.top + bufferAxis + i * bufferLegend;
                     })
                     .data(countryList)
@@ -151,12 +162,26 @@ window.onload = function() {
                     .style("text-anchor", "left")
                     .text(function (d) { return d});
         };  
-        
-        initialFigure(dataset[0], 0);
-        drawScale();
-        drawCircle(dataset[0]);
-        addLegend()
 
+        function Draw(datasetNum) {
+            initialFigure(dataset[datasetNum], datasetNum);
+            drawScale(datasetNum);
+            drawCircle(dataset[datasetNum]);
+            addLegend();
+
+        }
+
+        var datasetNumCurrent = 0;
+        Draw(datasetNumCurrent);
+        // Show the dataset 0 at the begging.
+
+        // for each click on botton, clean current figure, change dataset and then show he new figure.
+        document.getElementById("click").onclick = function ChangeDatasetNum() {
+            d3.selectAll("svg")
+                .remove();
+            datasetNumCurrent = 1 - datasetNumCurrent;
+            Draw(datasetNumCurrent);
+        }
     })
     .catch(function(e) { throw(e); }); // once some errors occur in promise;
 }
