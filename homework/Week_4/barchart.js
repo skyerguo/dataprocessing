@@ -9,7 +9,7 @@ d3.json("data.json").then(function(json) {
     var dataset = json; // get the dataset from json
 
     var width = 1200; // visual area width of svg
-    var height = 600;   // bisual area height of svg
+    var height = 600;   // visual area height of svg
 
     /* initialize the svg */
     var svg = d3.select("body")

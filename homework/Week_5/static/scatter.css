@@ -1,0 +1,36 @@
+/* 坐标样式 */
+.axis path, .axis line{
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+.axis text {
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: 200;
+    fill: orange;
+}
+/* 功能按钮 */
+.btnWrap{
+    margin-left: 140px;
+    margin-top: 10px;
+}
+
+text.title {
+    font-size: 40px;
+    fill: green;
+    font-weight: 600;
+}
+
+text.label {
+    font-size: 25px;
+    font-weight: 400;
+    fill: gray;
+}
+
+text.bar-number {
+    font-size: 16px;
+    font-weight: 300;
+    fill: white;
+    text-anchor: middle;
+}
