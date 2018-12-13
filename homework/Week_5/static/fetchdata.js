@@ -30,6 +30,11 @@ function transformResponse(data, label) {
     // and the descriptors for that datapoint
     let dataArray = [];
 
+    function clear(str) {
+        str = str.replace(/,/g, ""); // replace the comma
+        return str;
+    }
+
     // for each string that we created
     strings.forEach(function(string){
         // for each observation and its index
@@ -49,12 +54,11 @@ function transformResponse(data, label) {
                 }
                 else { // fetch the first dataset of womenInScience
                     tempString = string.slice(2, 3);
-                    console.log(tempString);
                     tempObj[varArray[1].name] = varArray[1].values[tempString].name;
                 }
 
                 // every datapoint has a time and ofcourse a datapoint
-                tempObj["time"] = obs.name;
+                tempObj["time"] = clear(obs.name);
                 tempObj["datapoint"] = data[0];
                 dataArray.push(tempObj);
             }

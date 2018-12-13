@@ -59,7 +59,8 @@ window.onload = function() {
 
         function drawScale(datasetNum) {
 
-            var xAxis = d3.axisBottom(xScale);
+            var xAxis = d3.axisBottom(xScale)
+                          .tickFormat(d3.format("d"));
 
             yScale.range([yAxisWidth, bufferAxis]);  // reset the value range of the y-axis scale, as opposed to the original
             var yAxis = d3.axisLeft(yScale);

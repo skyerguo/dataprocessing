@@ -26,7 +26,5 @@ text.label {
 .btnWrap{
     position: absolute; 
     bottom: 5%;
-    width: 1600; 
     left: 50%; 
-    margin-left: -(1600/2);
 }
