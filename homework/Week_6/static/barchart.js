@@ -6,12 +6,12 @@ Description:        Create a bar chart with the D3 library using the given data.
 
 d3.json("../data/data.json").then(function(jsonfile) {
 
-    // get the dataset from json
-    var dataset = jsonfile.filter(function(e) { return (e.INDICATOR == "CG_SENG" && e.INEQUALITY == "TOT"
+    // get the dataset_bar from json
+    var dataset_bar = jsonfile.filter(function(e) { return (e.INDICATOR == "CG_SENG" && e.INEQUALITY == "TOT"
                                                          && e.Country != "OECD - Total");});
 
     var width = 1200; // visual area width of svg
-    var height = 600;   // visual area height of svg
+    var height = 500;   // visual area height of svg
 
     /* initialize the svg */
     var svg = d3.select("body")
@@ -23,21 +23,21 @@ d3.json("../data/data.json").then(function(jsonfile) {
     
     var xAxisWidth = width - 200; // width of x-axis
     var yAxisWidth = height - 100; // height of y-axis
-    var bar_num = dataset.length; // the number of columnar bodys
+    var bar_num = dataset_bar.length; // the number of columnar bodys
     
     /* x-axis scale (ordinal scale) */
     var xScale = d3.scaleBand()
-                    .domain(dataset.map(function(d) { return d.LOCATION; }))
+                    .domain(dataset_bar.map(function(d) { return d.LOCATION; }))
                     .range([0, xAxisWidth], 0.3);
 
     /* y-axis scale (ordinal scale) */
     var yScale = d3.scaleLinear()
-                    .domain([0, d3.max(dataset, function(d) { return d.Value; })])
+                    .domain([0, d3.max(dataset_bar, function(d) { return d.Value; })])
                     .range([yAxisWidth, 0]);
     
     /* y-bar-axis scale (ordinal scale) */
     var yBarScale = d3.scaleLinear()
-                    .domain([0, d3.max(dataset, function(d) { return d.Value; })])
+                    .domain([0, d3.max(dataset_bar, function(d) { return d.Value; })])
                     .range([0, yAxisWidth]); // range is reversed from y-axis
     
     /* title of the bar chart, on the middle and top of total figure */
@@ -50,7 +50,7 @@ d3.json("../data/data.json").then(function(jsonfile) {
 
     /* rect */
     var rect = svg.selectAll("rect")
-                    .data(dataset)
+                    .data(dataset_bar)
                     .enter()
                     .append("rect")
                     .call(rectFun) // call rectFun for each selection
