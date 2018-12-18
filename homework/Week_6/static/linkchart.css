@@ -35,3 +35,16 @@ text.bar-number {
     font-weight: 200;
     fill: orange;
 }
+
+text.percent {
+    font-family: monospace;
+    font-size: 16px;
+    font-weight: 500;
+    fill: blue;
+    text-anchor: middle;
+}
+
+line.relation {
+    stroke: red;
+    stroke-width: 3;
+}
