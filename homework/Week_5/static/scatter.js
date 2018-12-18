@@ -169,7 +169,6 @@ window.onload = function() {
             drawScale(datasetNum);
             drawCircle(dataset[datasetNum]);
             addLegend();
-
         }
 
         var datasetNumCurrent = 0;
