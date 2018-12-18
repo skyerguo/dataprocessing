@@ -1,0 +1,37 @@
+line#highlight {
+    stroke: red;
+    stroke-width: 3;
+    stroke-dasharray: 3 6;
+}
+
+text.title {
+    font-size: 40px;
+    fill: green;
+    font-weight: 600;
+}
+
+text.label {
+    font-size: 25px;
+    font-weight: 400;
+    fill: gray;
+}
+
+text.bar-number {
+    font-size: 16px;
+    font-weight: 500;
+    fill: black;
+    text-anchor: middle;
+}
+
+.axis line{
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: 200;
+    fill: orange;
+}
