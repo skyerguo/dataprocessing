@@ -1,4 +1,4 @@
-d3.json("../data/data.json").then(function(jsonfile) {
+d3.json("data/data.json").then(function(jsonfile) {
 
     barchart()
     piechart(0, 0)
